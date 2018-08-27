@@ -1,0 +1,32 @@
+{
+  "name": "isochronic-sg-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "ui redux-module test",
+    "build:lib": "ui redux-module build:lib",
+    "build:app": "ui redux-module build:app",
+    "dev": "ui redux-module dev",
+    "test:watch": "ui redux-module test:watch",
+    "lint": "ui redux-module lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ocd-sg/ui": "github:ocd-sg/ui",
+    "@types/geojson": "^7946.0.4",
+    "@types/mapbox-gl": "^0.47.2"
+  },
+  "dependencies": {
+    "@turf/turf": "^5.1.6",
+    "d3-dsv": "^1.0.10",
+    "google-maps": "^3.3.0",
+    "mapbox-gl": "^0.48.0",
+    "react-geosuggest": "^2.8.0",
+    "ui-tachyons-light": "github:ocd-sg/ui-tachyons-light",
+    "ui-tachyons-monokai": "github:ocd-sg/ui-tachyons-monokai",
+    "uuid": "^3.3.2"
+  },
+  "description": ""
+}
