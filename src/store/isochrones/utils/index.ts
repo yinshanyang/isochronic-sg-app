@@ -6,7 +6,8 @@ import { ajax } from 'rxjs/ajax'
 import { map } from 'rxjs/operators'
 import { tap } from 'rxjs/operators'
 import * as d3 from 'd3-dsv'
-import * as turf from '@turf/turf'
+import { featureCollection, point } from '@turf/helpers'
+import nearestPoint from '@turf/nearest-point'
 
 type Requests = Request[]
 
@@ -22,11 +23,11 @@ export const composePointsRequest = (): Request => ({
 })
 
 export const parsePointsResponse = (data: string): Points =>
-  turf.featureCollection(
+  featureCollection(
     data
       ? d3.csvParse(data)
         .filter(({ data }: any) => data === 'true')
-        .map(({ index, lat, lon }: any) => turf.point([+lon, +lat], { id: index }))
+        .map(({ index, lat, lon }: any) => point([+lon, +lat], { id: index }))
       : []
   )
 
@@ -37,7 +38,7 @@ export const composeIsochronesRequest = ({ layers, points }: { layers: Layers, p
     .filter(({ coordinates }) => coordinates !== null)
     .map(({ id, coordinates }) => ({
       id,
-      nearest: turf.nearestPoint(coordinates, points)
+      nearest: nearestPoint(coordinates, points)
     }))
     .map(({ id, nearest }): Request =>
       ({

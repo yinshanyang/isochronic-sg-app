@@ -4,13 +4,14 @@ import { createSelector } from 'reselect'
 import { selectors } from 'app/store'
 
 import SinglePointOverlay from './SinglePointOverlay'
+import MultiPointOverlay from './MultiPointOverlay'
 
 const IsochronesOverlay = ({ isochrones, map }) =>
   isochrones.length === 0
     ? null
     : isochrones.length === 1
       ? <SinglePointOverlay data={isochrones[0]} map={map} />
-      : null
+      : <MultiPointOverlay data={isochrones} map={map} />
 
 const getActiveIsochrones = createSelector(
   [selectors.isochrones.getLayers, selectors.isochrones.getIsochrones],

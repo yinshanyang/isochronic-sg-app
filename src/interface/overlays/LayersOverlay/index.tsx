@@ -2,7 +2,7 @@ import * as React from 'react'
 import { createSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { selectors } from 'app/store'
-import * as turf from '@turf/helpers'
+import { featureCollection, point } from '@turf/helpers'
 
 import GeoJSONOverlay from 'app/interface/common/GeoJSONOverlay'
 
@@ -27,10 +27,10 @@ const LayersOverlay = ({ config, features, ...props }) =>
 const getFeatures = createSelector(
   [selectors.isochrones.getLayers],
   (layers) =>
-    turf.featureCollection(
+    featureCollection(
       layers
         .filter(({ coordinates }) => coordinates !== null)
-        .map(({ id, coordinates, name }) => turf.point(coordinates, { id, name }))
+        .map(({ id, coordinates, name }) => point(coordinates, { id, name }))
     )
 )
 

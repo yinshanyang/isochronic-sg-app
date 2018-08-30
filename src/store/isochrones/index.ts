@@ -6,7 +6,7 @@ import { concat } from 'rxjs/observable/concat'
 import { ajax } from 'rxjs/ajax'
 import { filter, map, switchMap, reduce, takeUntil } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
-import * as turf from '@turf/helpers'
+import { featureCollection } from '@turf/helpers'
 const uuid = require('uuid/v1')
 import {
   validatePointsRequest,
@@ -39,7 +39,7 @@ export type State = {
 
 export const initialState: State = {
   layers: [],
-  points: turf.featureCollection([]),
+  points: featureCollection([]),
   isochrones: []
 }
 
@@ -149,6 +149,7 @@ const fetchIsochronesEpic: Epic<Action, Action, RootState> = (action$, store$) =
     ofType(FETCH_ISOCHRONES),
     map(() => store$.value),
     map((state) => ({
+      magic: console.log(state),
       layers: getLayers(state),
       points: getPoints(state)
     })),

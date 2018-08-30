@@ -1,7 +1,7 @@
 const config = {
   data:
     process.env.NODE_ENV === 'production'
-      ? 'https://api.reddit.com'
+      ? '/data/isochrone'
       : 'http://0.0.0.0:5000',
   map: {
     apiKey: 'pk.eyJ1IjoieWluc2hhbnlhbmciLCJhIjoiNDM4MDVlOWFjNDkwNzQwZTlmYTIzNDlmZGUzMzRlMTkifQ.9TdM9ymU2sqMKrRLYCvllQ',
