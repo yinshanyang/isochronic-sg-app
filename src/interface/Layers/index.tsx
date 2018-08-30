@@ -10,8 +10,8 @@ import Clear from 'app/interface/common/icons/Clear'
 import Remove from 'app/interface/common/icons/Remove'
 
 let googleMaps = null
-GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
-// GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
+// GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
+GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
 GoogleMapsLoader.LIBRARIES = ['places']
 
 GoogleMapsLoader.load((google) => {
@@ -120,16 +120,12 @@ class Layers extends PureComponent {
             />
           ))
         }
-        {
-          layers.length < 3 && (
-            <a
-              className='db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer'
-              onClick={this.handleAdd}
-            >
-              <Add />
-            </a>
-          )
-        }
+        <a
+          className='db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer'
+          onClick={this.handleAdd}
+        >
+          <Add />
+        </a>
       </div>
     )
   }
