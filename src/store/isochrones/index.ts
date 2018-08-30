@@ -14,7 +14,7 @@ import {
   parsePointsResponse,
   validateIsochronesRequest,
   composeIsochronesRequest,
-  parseIsochronesResponse
+  getOrFetchIsochronesRequest
 } from './utils'
 
 const mountPoint = 'isochrones'
@@ -51,7 +51,7 @@ const setLayersReducer = (state: State, action: Action): State => ({
 
 const setLayerReducer = (state: State, action: Action): State => ({
   ...state,
-  layers: state.layers.map((d, index) => index === action.params.index ? action.payload : d)
+  layers: state.layers.map((d, index) => index === action.params.index ? { ...d, ...action.payload } : d)
 })
 
 const addLayerReducer = (state: State, action: Action): State => ({
@@ -156,17 +156,7 @@ const fetchIsochronesEpic: Epic<Action, Action, RootState> = (action$, store$) =
     map(composeIsochronesRequest),
     switchMap((requests) =>
       concat(
-        ...requests.map((request) =>
-          ajax({
-            ...request,
-            timeout: MINUTE_IN_MILLISECONDS
-          }).pipe(
-            takeUntil(action$.pipe(ofType(FETCH_ISOCHRONES))),
-            map(({ response }) => response),
-            map(parseIsochronesResponse),
-            map((features) => ({ ...features, properties: { id: request.id } }))
-          )
-        )
+        ...requests.map(getOrFetchIsochronesRequest)
       ).pipe(
         reduce((memo, d) => [ ...memo, d ], []),
         map(setIsochrones)

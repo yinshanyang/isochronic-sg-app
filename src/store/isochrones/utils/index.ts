@@ -1,10 +1,16 @@
 import Config from 'app/config'
 import { Layers, Points, Isochrones } from 'app/types'
 import { Request } from 'app/types'
+import { of } from 'rxjs/observable/of'
+import { ajax } from 'rxjs/ajax'
+import { map } from 'rxjs/operators'
+import { tap } from 'rxjs/operators'
 import * as d3 from 'd3-dsv'
 import * as turf from '@turf/turf'
 
 type Requests = Request[]
+
+let cache = {}
 
 export const validatePointsRequest = (): boolean => true
 
@@ -41,6 +47,19 @@ export const composeIsochronesRequest = ({ layers, points }: { layers: Layers, p
         responseType: 'json',
         id
       })
+    )
+
+export const getOrFetchIsochronesRequest = (request: Request) =>
+  cache[request.url]
+    ? of({ ...cache[request.url], properties: { id: request.id } })
+    : ajax({
+      ...request,
+      timeout: 60 * 1000
+    }).pipe(
+      map(({ response }) => response),
+      map(parseIsochronesResponse),
+      tap((data) => { cache[request.url] = data }),
+      map((features) => ({ ...features, properties: { id: request.id } }))
     )
 
 

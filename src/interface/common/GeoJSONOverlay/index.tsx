@@ -36,8 +36,8 @@ class GeoJSONOverlay extends PureComponent<Props> {
     const { map } = this.props
     const { ids } = this.layer
     if (!map || !map.style) return
-    if (map.getSource(ids.source)) map.removeSource(ids.source)
     if (map.getLayer(ids.layer)) map.removeLayer(ids.layer)
+    if (map.getSource(ids.source)) map.removeSource(ids.source)
   }
 
   render () {
