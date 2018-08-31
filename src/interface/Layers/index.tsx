@@ -10,8 +10,8 @@ import Clear from 'app/interface/common/icons/Clear'
 import Remove from 'app/interface/common/icons/Remove'
 
 let googleMaps = null
-// GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
-GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
+GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
+// GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
 GoogleMapsLoader.LIBRARIES = ['places']
 
 GoogleMapsLoader.load((google) => {

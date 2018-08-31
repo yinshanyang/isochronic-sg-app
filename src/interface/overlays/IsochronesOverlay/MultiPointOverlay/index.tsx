@@ -73,16 +73,47 @@ const MultiPointOverlay = ({ configs, data, ...props }) => (
   </React.Fragment>
 )
 
+const closeFeature = (feature) => {
+  if (feature.geometry.type === 'MultiPolygon') {
+    feature.geometry.coordinates = feature.geometry.coordinates
+      .map((polygon) =>
+        polygon
+          .filter((d) => d.length > 3)
+          .map((lineRing) =>
+            lineRing[0].join() !== lineRing[lineRing.length - 1].join()
+              ? [ ...lineRing, lineRing[0] ]
+              : lineRing
+          )
+      )
+      .filter((d) => d.length)
+  }
+  else if (feature.geometry.type === 'Polygon') {
+    feature.geometry.coordinates = feature.geometry.coordinates
+      .filter((d) => d.length > 3)
+      .map((lineRing) =>
+        lineRing[0].join() !== lineRing[lineRing.length - 1].join()
+          ? [ ...lineRing, lineRing[0] ]
+          : lineRing
+      )
+      .filter((d) => d.length)
+  }
+  return feature.geometry.coordinates.length ? feature : null
+}
+
 const getIntersections = (data) => {
-  const d = [15, 30, 45]
+  console.time('intersection')
+  const d = [15, 30, 45, 60]
     .map((index) => data.map((features) => features.features[index]))
   const matrix = d
     .map((d, index) =>
-      d.reduce((memo, d) => memo && d ? intersect(buffer(memo, 0), buffer(d, 0), { properties: { index } }) : null, d[0])
+      d.reduce((a, b) => a ? intersect(closeFeature(a), b, { properties: { index } }) : null)
     )
     .filter((d) => d)
+    .map(closeFeature)
     .map((d) => buffer(d, 0))
     .reverse()
+
+  console.timeEnd('intersection')
   return featureCollection(matrix)
 }
 
