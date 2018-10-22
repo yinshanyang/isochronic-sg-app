@@ -5,8 +5,12 @@
   "scripts": {
     "test": "ui redux-module test",
     "build:lib": "ui redux-module build:lib",
-    "build:app": "ui redux-module build:app",
-    "dev": "ui redux-module dev",
+    "build:app": "npm run build:app:app && npm run build:app:data",
+    "build:app:app": "ui redux-module build:app",
+    "build:app:data": "cp -r data build/app/data",
+    "dev": "npm run dev:data | npm run dev:app",
+    "dev:app": "ui redux-module dev",
+    "dev:data": "serve --config serve.json",
     "test:watch": "ui redux-module test:watch",
     "lint": "ui redux-module lint"
   },
@@ -16,7 +20,8 @@
   "devDependencies": {
     "@ocd-sg/ui": "github:ocd-sg/ui",
     "@types/geojson": "^7946.0.4",
-    "@types/mapbox-gl": "^0.47.2"
+    "@types/mapbox-gl": "^0.47.2",
+    "serve": "^6.5.8"
   },
   "dependencies": {
     "@turf/buffer": "^5.1.5",
