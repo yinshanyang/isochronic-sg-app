@@ -1,8 +1,5 @@
 const config = {
-  data:
-    process.env.NODE_ENV === 'production'
-      ? 'data'
-      : 'http://0.0.0.0:5000',
+  data: '/data',
   map: {
     apiKey: 'pk.eyJ1IjoieWluc2hhbnlhbmciLCJhIjoiNDM4MDVlOWFjNDkwNzQwZTlmYTIzNDlmZGUzMzRlMTkifQ.9TdM9ymU2sqMKrRLYCvllQ',
     center: [103.834534, 1.316688],
