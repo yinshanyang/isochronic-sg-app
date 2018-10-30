@@ -1,142 +1,120 @@
 import * as React from 'react'
+const { useRef } = require('react')
 import { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { actions, selectors } from 'app/store'
 const GoogleMapsLoader = require('google-maps')
 
-import GeoCoder from 'react-geosuggest'
+const GeoCoder = require('react-geosuggest').default
 import Add from 'app/interface/common/icons/Add'
 import Clear from 'app/interface/common/icons/Clear'
 import Remove from 'app/interface/common/icons/Remove'
 
 let googleMaps = null
 GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
-// GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
 GoogleMapsLoader.LIBRARIES = ['places']
-
-GoogleMapsLoader.load((google) => {
-  googleMaps = google.maps
-})
+GoogleMapsLoader.load((google) => { googleMaps = google.maps })
 
 const classNames = {
-  container: 'relative w-100 br2 bg-background-100',
-  input: 'bn w-100 h2 outline-0 pa3 pr5 bg-background-100 sans-serif br2',
-  suggests: 'w-100 list pa0 ma0 bg-background-100 bt b--background-90 text-normal-40 shadow-2 overflow-hidden br2 br--bottom',
-  suggestsHidden: 'dn',
-  suggestItem: 'pv2 ph3 bb b--background-90 pointer underline-hover truncate',
-  suggestItemActive: 'bg-background-90 text-normal-100'
+  className: 'relative w-100 br2 bg-background-100',
+  inputClassName: 'bn w-100 h2 outline-0 pa3 pr5 bg-background-100 sans-serif br2',
+  suggestsClassName: 'w-100 list pa0 ma0 bg-background-100 bt b--background-90 text-normal-40 shadow-2 overflow-hidden br2 br--bottom',
+  suggestsHiddenClassName: 'dn',
+  suggestItemClassName: 'pv2 ph3 bb b--background-90 pointer underline-hover truncate',
+  suggestItemActiveClassName: 'bg-background-90 text-normal-100'
 }
 
-class Layer extends PureComponent {
-  constructor (props) {
-    super(props)
-    this.geocoder = React.createRef()
+const Layer = ({ index, layer, disableRemove, googleMaps, onChange, onRemove, onClear }) => {
+  const ref = useRef()
+
+  function getSuggestLabel ({ description }) {
+    return description.replace(/, Singapore$/, '')
   }
 
-  getSuggestLabel = ({ description }) => description.replace(/, Singapore$/, '')
+  console.log(ref)
 
-  render () {
-    const { layer, disableRemove, googleMaps } = this.props
-    return (
-      <div className='relative mb1 br2 shadow-2 bg-background-100'>
-        <GeoCoder
-          ref={this.geocoder}
-          placeholder='Search…'
-          initialValue={layer.name}
-          country='sg'
-          types={['establishment', 'geocode']}
-          googleMaps={googleMaps}
-          getSuggestLabel={this.getSuggestLabel}
-          className={classNames.container}
-          inputClassName={classNames.input}
-          suggestsClassName={classNames.suggests}
-          suggestsHiddenClassName={classNames.suggestsHidden}
-          suggestItemClassName={classNames.suggestItem}
-          suggestItemActiveClassName={classNames.suggestItemActive}
-          autoActivateFirstSuggest={true}
-          onSuggestSelect={this.handleChange}
-        />
-        <div className='absolute h2 top-0 right-0 f6 flex flex-row items-center justify-center z-1'>
-          {
-            layer.name && (
-              <a
-                className='db ph3 h-100 pointer flex flex-row items-center justify-center'
-                onClick={this.handleClear}
-              >
-                <Clear />
-              </a>
-            )
-          }
-          {
-            !disableRemove && (
-              <a
-                className='db bg-background-60 br2 br--right ph3 h-100 pointer flex flex-row items-center justify-center'
-                onClick={this.handleRemove}
-              >
-                <Remove />
-              </a>
-            )
-          }
-        </div>
-      </div>
-    )
-  }
-
-  handleChange = (selection) => {
+  function handleChange (selection) {
     if (selection) {
-      const { index, onChange } = this.props
       const { label, location } = selection
-      this.geocoder.current.blur()
+      ref.current.blur()
       return onChange({ name: label, coordinates: [location.lng, location.lat] })
     }
     else {
-      this.handleClear()
+      handleClear()
     }
   }
 
-  handleRemove = () => this.props.onRemove()
+  function handleRemove () { return onRemove() }
 
-  handleClear = () => this.props.onClear()
+  function handleClear () { return onClear() }
+
+  return (
+    <div className='relative mb1 br2 shadow-2 bg-background-100'>
+      <GeoCoder
+        ref={ref}
+        {...classNames}
+        placeholder='Search…'
+        initialValue={layer.name}
+        country='sg'
+        types={['establishment', 'geocode']}
+        googleMaps={googleMaps}
+        getSuggestLabel={getSuggestLabel}
+        autoActivateFirstSuggest={true}
+        onSuggestSelect={handleChange}
+      />
+      <div className='absolute h2 top-0 right-0 f6 flex flex-row items-center justify-center z-1'>
+        {
+          layer.name && (
+            <a
+              className='db ph3 h-100 pointer flex flex-row items-center justify-center'
+              onClick={handleClear}
+            >
+              <Clear />
+            </a>
+          )
+        }
+        {
+          !disableRemove && (
+            <a
+              className='db bg-background-60 br2 br--right ph3 h-100 pointer flex flex-row items-center justify-center'
+              onClick={handleRemove}
+            >
+              <Remove />
+            </a>
+          )
+        }
+      </div>
+    </div>
+  )
 }
 
-class Layers extends PureComponent {
-  render () {
-    const { layers, googleMaps } = this.props
-    return googleMaps && (
-      <div
-        className='absolute top-1 left-1 right-1 sans-serif f7 lh-solid'
-        style={{ maxWidth: 320 }}
+const Layers = ({ layers, googleMaps, onChange, onAdd, onRemove, onClear }) => {
+  return googleMaps && (
+    <div
+      className='absolute top-1 left-1 right-1 sans-serif f7 lh-solid'
+      style={{ maxWidth: 320 }}
+    >
+      {
+        layers.map((layer, index) => (
+          <Layer
+            key={index}
+            layer={layer}
+            googleMaps={googleMaps}
+            disableRemove={index === 0}
+            onChange={() => onChange(index)}
+            onRemove={() => onRemove(index)}
+            onClear={() => onClear(index)}
+          />
+        ))
+      }
+      <a
+        className='db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer'
+        onClick={onAdd}
       >
-        {
-          layers.map((layer, index) => (
-            <Layer
-              key={index}
-              layer={layer}
-              googleMaps={googleMaps}
-              disableRemove={index === 0}
-              onChange={this.handleChange(index)}
-              onRemove={this.handleRemove(index)}
-              onClear={this.handleClear(index)}
-            />
-          ))
-        }
-        <a
-          className='db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer'
-          onClick={this.handleAdd}
-        >
-          <Add />
-        </a>
-      </div>
-    )
-  }
-
-  handleChange = (index: number) => (layer) => this.props.onChange(layer, index)
-
-  handleAdd = () => this.props.onAdd()
-
-  handleRemove = (index: number) => () => this.props.onRemove(index)
-
-  handleClear = (index: number) => () => this.props.onClear(index)
+        <Add />
+      </a>
+    </div>
+  )
 }
 
 const mapStoreToProps = (store) => ({
