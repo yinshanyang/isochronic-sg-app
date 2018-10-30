@@ -1,12 +1,12 @@
 {
   "name": "isochronic-sg-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "test": "ui redux-module test",
     "build:lib": "ui redux-module build:lib",
     "build:app": "npm run build:app:app && npm run build:app:data",
-    "build:app:app": "ui redux-module build:app",
+    "build:app:app": "TITLE='Isochronic Singapore — Swarm' ui redux-module build:app",
     "build:app:data": "cp -r data build/app/data",
     "dev": "npm run dev:data | npm run dev:app",
     "dev:app": "ui redux-module dev",
@@ -31,7 +31,7 @@
     "d3-dsv": "^1.0.10",
     "google-maps": "^3.3.0",
     "mapbox-gl": "^0.50.0",
-    "react-geosuggest": "^2.8.0",
+    "react-geosuggest": "^2.9.0",
     "ui-tachyons-light": "github:ocd-sg/ui-tachyons-light",
     "uuid": "^3.3.2"
   },

@@ -149,7 +149,6 @@ const fetchIsochronesEpic: Epic<Action, Action, RootState> = (action$, store$) =
     ofType(FETCH_ISOCHRONES),
     map(() => store$.value),
     map((state) => ({
-      magic: console.log(state),
       layers: getLayers(state),
       points: getPoints(state)
     })),

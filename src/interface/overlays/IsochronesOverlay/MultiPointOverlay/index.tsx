@@ -101,7 +101,6 @@ const closeFeature = (feature) => {
 }
 
 const getIntersections = (data) => {
-  console.time('intersection')
   const d = [15, 30, 45, 60]
     .map((index) => data.map((features) => features.features[index]))
   const matrix = d
@@ -112,8 +111,6 @@ const getIntersections = (data) => {
     .map(closeFeature)
     .map((d) => buffer(d, 0))
     .reverse()
-
-  console.timeEnd('intersection')
   return featureCollection(matrix)
 }
 
