@@ -10,7 +10,7 @@
     "build:app:data": "cp -r data build/app/data",
     "dev": "npm run dev:data | npm run dev:app",
     "dev:app": "ui redux-module dev",
-    "dev:data": "serve --config serve.json",
+    "dev:data": "serve data",
     "test:watch": "ui redux-module test:watch",
     "lint": "ui redux-module lint"
   },
@@ -20,8 +20,8 @@
   "devDependencies": {
     "@ocd-sg/ui": "github:ocd-sg/ui",
     "@types/geojson": "^7946.0.4",
-    "@types/mapbox-gl": "^0.47.2",
-    "serve": "^6.5.8"
+    "@types/mapbox-gl": "^0.49.0",
+    "serve": "^10.0.2"
   },
   "dependencies": {
     "@turf/buffer": "^5.1.5",
@@ -30,7 +30,7 @@
     "@turf/nearest-point": "^6.0.1",
     "d3-dsv": "^1.0.10",
     "google-maps": "^3.3.0",
-    "mapbox-gl": "^0.48.0",
+    "mapbox-gl": "^0.50.0",
     "react-geosuggest": "^2.8.0",
     "ui-tachyons-light": "github:ocd-sg/ui-tachyons-light",
     "uuid": "^3.3.2"
