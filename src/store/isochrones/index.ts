@@ -66,19 +66,23 @@ const addLayerReducer = (state: State, action: Action): State => ({
   ]
 })
 
-const removeLayerReducer = (state: State, action: Action): State => ({
-  ...state,
-  layers: state.layers.filter((_, index) => index !== action.params.index)
-})
+const removeLayerReducer = (state: State, action: Action): State => {
+  const layer = state.layers[action.params.index]
+  const layers = state.layers.filter((d) => d !== layer)
+  const isochrones = state.isochrones.filter(({ properties }) => properties.id !== layer.id)
+  return { ...state, layers, isochrones }
+}
 
-const clearLayerReducer = (state: State, action: Action): State => ({
-  ...state,
-  layers: state.layers.map((d, index) =>
-  index === action.params.index
-    ? { ...d, name: '', coordinates: null }
-    : d
+const clearLayerReducer = (state: State, action: Action): State => {
+  const layer = state.layers[action.params.index]
+  const layers = state.layers.map((d) =>
+    d === layer
+      ? { ...d, name: '', coordinates: null }
+      : d
   )
-})
+  const isochrones = state.isochrones.filter(({ properties }) => properties.id !== layer.id)
+  return { ...state, layers, isochrones }
+}
 
 const setPointsReducer = (state: State, action: Action): State => ({
   ...state,
