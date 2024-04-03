@@ -2,21 +2,31 @@ import * as React from 'react'
 import { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { actions, selectors } from 'app/store'
-const GoogleMapsLoader = require('google-maps')
+import { Loader } from '@googlemaps/js-api-loader'
 
 import GeoCoder from 'react-geosuggest'
 import Add from 'app/interface/common/icons/Add'
 import Clear from 'app/interface/common/icons/Clear'
 import Remove from 'app/interface/common/icons/Remove'
 
-let googleMaps = null
-// GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
-GoogleMapsLoader.KEY = 'AIzaSyB9vOt6gosn46a8DVWQcrhdeZJRFhIecBY'
-GoogleMapsLoader.LIBRARIES = ['places']
+const loader = new Loader({
+  apiKey: 'AIzaSyB9vOt6gosn46a8DVWQcrhdeZJRFhIecBY',
+  version: 'weekly',
+  libraries: ['places']
+})
 
-GoogleMapsLoader.load((google) => {
+let googleMaps = null
+loader.load().then((google) => {
   googleMaps = google.maps
 })
+// let googleMaps = null
+// // GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
+// GoogleMapsLoader.KEY = 'AIzaSyB9vOt6gosn46a8DVWQcrhdeZJRFhIecBY'
+// GoogleMapsLoader.LIBRARIES = ['places']
+
+// GoogleMapsLoader.load((google) => {
+//   googleMaps = google.maps
+// })
 
 const classNames = {
   className: 'relative w-100 br2 bg-background-100',
@@ -27,7 +37,7 @@ const classNames = {
   suggestsHiddenClassName: 'dn',
   suggestItemClassName:
     'pv2 ph3 bb b--background-90 pointer underline-hover truncate',
-  suggestItemActiveClassName: 'bg-background-90 text-normal-100',
+  suggestItemActiveClassName: 'bg-background-90 text-normal-100'
 }
 
 class Layer extends PureComponent {
@@ -83,7 +93,7 @@ class Layer extends PureComponent {
       this.geocoder.current.blur()
       return onChange({
         name: label,
-        coordinates: [location.lng, location.lat],
+        coordinates: [location.lng, location.lat]
       })
     } else {
       this.handleClear()
@@ -137,7 +147,7 @@ class Layers extends PureComponent {
 
 const mapStoreToProps = (store) => ({
   layers: selectors.isochrones.getLayers(store),
-  googleMaps,
+  googleMaps
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -145,7 +155,10 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.isochrones.setLayer(layer, index)),
   onAdd: () => dispatch(actions.isochrones.addLayer()),
   onRemove: (index) => dispatch(actions.isochrones.removeLayer(index)),
-  onClear: (index) => dispatch(actions.isochrones.clearLayer(index)),
+  onClear: (index) => dispatch(actions.isochrones.clearLayer(index))
 })
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Layers)
+export default connect(
+  mapStoreToProps,
+  mapDispatchToProps
+)(Layers)
