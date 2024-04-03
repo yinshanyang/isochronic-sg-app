@@ -11,7 +11,7 @@ import Remove from 'app/interface/common/icons/Remove'
 
 let googleMaps = null
 // GoogleMapsLoader.KEY = 'AIzaSyBG0SybP0EKWH3Jvwki7IR5AMyO_cUeeQc'
-GoogleMapsLoader.KEY = 'AIzaSyD_c-n0mMsuEz2OSYN23bFivju2hbajC9A'
+GoogleMapsLoader.KEY = 'AIzaSyB9vOt6gosn46a8DVWQcrhdeZJRFhIecBY'
 GoogleMapsLoader.LIBRARIES = ['places']
 
 GoogleMapsLoader.load((google) => {
@@ -20,58 +20,57 @@ GoogleMapsLoader.load((google) => {
 
 const classNames = {
   className: 'relative w-100 br2 bg-background-100',
-  inputClassName: 'bn w-100 h2 outline-0 pa3 pr5 bg-background-100 sans-serif br2',
-  suggestsClassName: 'w-100 list pa0 ma0 bg-background-100 bt b--background-90 text-normal-40 shadow-2 overflow-hidden br2 br--bottom',
+  inputClassName:
+    'bn w-100 h2 outline-0 pa3 pr5 bg-background-100 sans-serif br2',
+  suggestsClassName:
+    'w-100 list pa0 ma0 bg-background-100 bt b--background-90 text-normal-40 shadow-2 overflow-hidden br2 br--bottom',
   suggestsHiddenClassName: 'dn',
-  suggestItemClassName: 'pv2 ph3 bb b--background-90 pointer underline-hover truncate',
-  suggestItemActiveClassName: 'bg-background-90 text-normal-100'
+  suggestItemClassName:
+    'pv2 ph3 bb b--background-90 pointer underline-hover truncate',
+  suggestItemActiveClassName: 'bg-background-90 text-normal-100',
 }
 
 class Layer extends PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.geocoder = React.createRef()
   }
 
   getSuggestLabel = ({ description }) => description.replace(/, Singapore$/, '')
 
-  render () {
+  render() {
     const { layer, hideRemove, googleMaps } = this.props
     return (
-      <div className='relative mb1 br2 shadow-2 bg-background-100'>
+      <div className="relative mb1 br2 shadow-2 bg-background-100">
         <GeoCoder
           ref={this.geocoder}
           {...classNames}
-          placeholder='Search…'
+          placeholder="Search…"
           initialValue={layer.name}
-          country='sg'
+          country="sg"
           types={['establishment', 'geocode']}
           googleMaps={googleMaps}
           getSuggestLabel={this.getSuggestLabel}
           autoActivateFirstSuggest={true}
           onSuggestSelect={this.handleChange}
         />
-        <div className='absolute h2 top-0 right-0 f6 flex flex-row items-center justify-center z-1'>
-          {
-            layer.name && (
-              <a
-                className='db ph3 h-100 pointer flex flex-row items-center justify-center'
-                onClick={this.handleClear}
-              >
-                <Clear />
-              </a>
-            )
-          }
-          {
-            !hideRemove && (
-              <a
-                className='db bg-background-60 br2 br--right ph3 h-100 pointer flex flex-row items-center justify-center'
-                onClick={this.handleRemove}
-              >
-                <Remove />
-              </a>
-            )
-          }
+        <div className="absolute h2 top-0 right-0 f6 flex flex-row items-center justify-center z-1">
+          {layer.name && (
+            <a
+              className="db ph3 h-100 pointer flex flex-row items-center justify-center"
+              onClick={this.handleClear}
+            >
+              <Clear />
+            </a>
+          )}
+          {!hideRemove && (
+            <a
+              className="db bg-background-60 br2 br--right ph3 h-100 pointer flex flex-row items-center justify-center"
+              onClick={this.handleRemove}
+            >
+              <Remove />
+            </a>
+          )}
         </div>
       </div>
     )
@@ -82,9 +81,11 @@ class Layer extends PureComponent {
       const { index, onChange } = this.props
       const { label, location } = selection
       this.geocoder.current.blur()
-      return onChange({ name: label, coordinates: [location.lng, location.lat] })
-    }
-    else {
+      return onChange({
+        name: label,
+        coordinates: [location.lng, location.lat],
+      })
+    } else {
       this.handleClear()
     }
   }
@@ -95,15 +96,15 @@ class Layer extends PureComponent {
 }
 
 class Layers extends PureComponent {
-  render () {
+  render() {
     const { layers, googleMaps } = this.props
-    return googleMaps && (
-      <div
-        className='absolute top-1 left-1 right-1 sans-serif f7-ns f5 lh-solid'
-        style={{ maxWidth: 384 }}
-      >
-        {
-          layers.map((layer, index) => (
+    return (
+      googleMaps && (
+        <div
+          className="absolute top-1 left-1 right-1 sans-serif f7-ns f5 lh-solid"
+          style={{ maxWidth: 384 }}
+        >
+          {layers.map((layer, index) => (
             <Layer
               key={index}
               layer={layer}
@@ -113,15 +114,15 @@ class Layers extends PureComponent {
               onRemove={this.handleRemove(index)}
               onClear={this.handleClear(index)}
             />
-          ))
-        }
-        <a
-          className='db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer'
-          onClick={this.handleAdd}
-        >
-          <Add />
-        </a>
-      </div>
+          ))}
+          <a
+            className="db center mt2 w2 h2 f4 bg-primary-100 fill-background-100 br-100 flex flex-row items-center justify-center shadow-2 pointer"
+            onClick={this.handleAdd}
+          >
+            <Add />
+          </a>
+        </div>
+      )
     )
   }
 
@@ -136,17 +137,15 @@ class Layers extends PureComponent {
 
 const mapStoreToProps = (store) => ({
   layers: selectors.isochrones.getLayers(store),
-  googleMaps
+  googleMaps,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onChange: (layer, index) => dispatch(actions.isochrones.setLayer(layer, index)),
+  onChange: (layer, index) =>
+    dispatch(actions.isochrones.setLayer(layer, index)),
   onAdd: () => dispatch(actions.isochrones.addLayer()),
   onRemove: (index) => dispatch(actions.isochrones.removeLayer(index)),
-  onClear: (index) => dispatch(actions.isochrones.clearLayer(index))
+  onClear: (index) => dispatch(actions.isochrones.clearLayer(index)),
 })
 
-export default connect(
-  mapStoreToProps,
-  mapDispatchToProps
-)(Layers)
+export default connect(mapStoreToProps, mapDispatchToProps)(Layers)
